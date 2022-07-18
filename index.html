@@ -6,21 +6,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <!-- <link rel="stylesheet" href="style.css"> -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <img src="#">
-
+    <button id="newImage">New random cat gif</button>
+    <label for="search">Write keywords and hit enter to search for more gifs:</label>
+    <input type="text" id="search">
     <script>
         const img = document.querySelector('img');
-        fetch('https://api.giphy.com/v1/gifs/translate?api_key=hEw7hKz35SNX5wpUhONAFKY6k4x3IqKP&s=cats', { mode: 'cors' })
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (response) {
-                img.src = response.data.images.original.url;
-            });
+        const button = document.getElementById('newImage');
+        const search = document.getElementById('search');
+        const fetchRandom = () => {
+            fetch('https://api.giphy.com/v1/gifs/translate?api_key=hEw7hKz35SNX5wpUhONAFKY6k4x3IqKP&s=cats', { mode: 'cors' })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (response) {
+                    img.src = response.data.images.original.url;
+                });
+        };
+        button.addEventListener('click', fetchRandom);
+        const gifSearch = (e) => {
+            if (e.key === "Enter") {
+                console.log(e.target.value);
+                fetch(`https://api.giphy.com/v1/gifs/translate?api_key=hEw7hKz35SNX5wpUhONAFKY6k4x3IqKP&s=${e.target.value}`, { mode: 'cors' })
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (response) {
+                        img.src = response.data.images.original.url;
+                    });
+            }
+        }
+        search.addEventListener('keypress', gifSearch);
+        fetchRandom();
     </script>
 </body>
 
