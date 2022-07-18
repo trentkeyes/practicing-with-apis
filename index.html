@@ -18,7 +18,10 @@
         const img = document.querySelector('img');
         const button = document.getElementById('newImage');
         const search = document.getElementById('search');
-        const fetchRandom = () => {
+        const msg = document.createElement('p');
+        document.body.append(msg);
+        const fetchCats = () => {
+            msg.textContent = "";
             fetch('https://api.giphy.com/v1/gifs/translate?api_key=hEw7hKz35SNX5wpUhONAFKY6k4x3IqKP&s=cats', { mode: 'cors' })
                 .then(function (response) {
                     return response.json();
@@ -27,21 +30,34 @@
                     img.src = response.data.images.original.url;
                 });
         };
-        button.addEventListener('click', fetchRandom);
         const gifSearch = (e) => {
             if (e.key === "Enter") {
-                console.log(e.target.value);
+                msg.textContent = "";
                 fetch(`https://api.giphy.com/v1/gifs/translate?api_key=hEw7hKz35SNX5wpUhONAFKY6k4x3IqKP&s=${e.target.value}`, { mode: 'cors' })
                     .then(function (response) {
                         return response.json();
                     })
                     .then(function (response) {
                         img.src = response.data.images.original.url;
-                    });
+                    }).catch((error) => handleError());
             }
         }
+        const handleError = () => {
+            msg.textContent = "Oops... No gifs were found. Try again!";
+            fetchSadGif();
+        }
+        const fetchSadGif = () => {
+            fetch(`https://api.giphy.com/v1/gifs/translate?api_key=hEw7hKz35SNX5wpUhONAFKY6k4x3IqKP&s=sad`, { mode: 'cors' })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (response) {
+                    img.src = response.data.images.original.url;
+                });
+        }
+        button.addEventListener('click', fetchCats);
         search.addEventListener('keypress', gifSearch);
-        fetchRandom();
+        fetchCats();
     </script>
 </body>
 
